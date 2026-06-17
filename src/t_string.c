@@ -898,7 +898,7 @@ void msetexCommand(client *c) {
     addReply(c, shared.cone);
 }
 
-void incrDecrCommand(client *c, long long incr) {
+void arithmeticCommand(client *c, long long incr, bool isIncrDecr) {
     long long value, oldvalue;
     robj *new;
     dictEntryLink link;
@@ -912,7 +912,8 @@ void incrDecrCommand(client *c, long long incr) {
         addReplyError(c,"increment or decrement would overflow");
         return;
     }
-    value += incr;
+    if (isIncrDecr) value += incr;
+    else value *= incr;
 
     if (o && o->refcount == 1 && o->encoding == OBJ_ENCODING_INT &&
         value >= LONG_MIN && value <= LONG_MAX)
@@ -939,18 +940,24 @@ void incrDecrCommand(client *c, long long incr) {
 }
 
 void incrCommand(client *c) {
-    incrDecrCommand(c,1);
+    arithmeticCommand(c,1, true);
 }
 
 void decrCommand(client *c) {
-    incrDecrCommand(c,-1);
+    arithmeticCommand(c,-1, true);
+}
+
+void multbyCommand(client *c) {
+    long long multby;
+    if (getLongLongFromObjectOrReply(c, c->argv[2], &multby, NULL) != C_OK) return;
+    arithmeticCommand(c,multby, false);
 }
 
 void incrbyCommand(client *c) {
     long long incr;
 
     if (getLongLongFromObjectOrReply(c, c->argv[2], &incr, NULL) != C_OK) return;
-    incrDecrCommand(c,incr);
+    arithmeticCommand(c,incr, true);
 }
 
 void decrbyCommand(client *c) {
@@ -962,7 +969,7 @@ void decrbyCommand(client *c) {
         addReplyError(c, "decrement would overflow");
         return;
     }
-    incrDecrCommand(c,-incr);
+    arithmeticCommand(c,-incr, true);
 }
 
 void incrbyfloatCommand(client *c) {

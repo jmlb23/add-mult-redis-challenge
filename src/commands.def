@@ -11806,6 +11806,30 @@ keySpec INCR_Keyspecs[1] = {
 };
 #endif
 
+/****** MULTBY *********/
+
+#ifndef SKIP_CMD_HISTORY_TABLE
+#define MULTBY_History NULL
+#endif
+
+#ifndef SKIP_CMD_TIPS_TABLE
+/* INCRBY tips */
+#define MULTBY_Tips NULL
+#endif
+
+#ifndef SKIP_CMD_KEY_SPECS_TABLE
+keySpec MULTBY_Keyspecs[1] = {
+{NULL,CMD_KEY_RW|CMD_KEY_ACCESS|CMD_KEY_UPDATE,KSPEC_BS_INDEX,.bs.index={1},KSPEC_FK_RANGE,.fk.range={0,1,0}}
+};
+#endif
+
+/* MULTBY argument table */
+struct COMMAND_ARG MULTBY_Args[] = {
+{MAKE_ARG("key",ARG_TYPE_KEY,0,NULL,NULL,NULL,CMD_ARG_NONE,0,NULL)},
+{MAKE_ARG("increment",ARG_TYPE_INTEGER,-1,NULL,NULL,NULL,CMD_ARG_NONE,0,NULL)},
+};
+
+
 /* INCR argument table */
 struct COMMAND_ARG INCR_Args[] = {
 {MAKE_ARG("key",ARG_TYPE_KEY,0,NULL,NULL,NULL,CMD_ARG_NONE,0,NULL)},
@@ -12657,6 +12681,7 @@ struct COMMAND_STRUCT redisCommandTable[] = {
 {MAKE_CMD("getset","Returns the previous string value of a key after setting it to a new value.","O(1)","1.0.0",CMD_DOC_DEPRECATED,"`SET` with the `!GET` argument","6.2.0","string",COMMAND_GROUP_STRING,GETSET_History,0,GETSET_Tips,0,getsetCommand,3,CMD_WRITE|CMD_DENYOOM|CMD_FAST,ACL_CATEGORY_STRING,GETSET_Keyspecs,1,NULL,2),.args=GETSET_Args},
 {MAKE_CMD("incr","Increments the integer value of a key by one. Uses 0 as initial value if the key doesn't exist.","O(1)","1.0.0",CMD_DOC_NONE,NULL,NULL,"string",COMMAND_GROUP_STRING,INCR_History,0,INCR_Tips,0,incrCommand,2,CMD_WRITE|CMD_DENYOOM|CMD_FAST,ACL_CATEGORY_STRING,INCR_Keyspecs,1,NULL,1),.args=INCR_Args},
 {MAKE_CMD("incrby","Increments the integer value of a key by a number. Uses 0 as initial value if the key doesn't exist.","O(1)","1.0.0",CMD_DOC_NONE,NULL,NULL,"string",COMMAND_GROUP_STRING,INCRBY_History,0,INCRBY_Tips,0,incrbyCommand,3,CMD_WRITE|CMD_DENYOOM|CMD_FAST,ACL_CATEGORY_STRING,INCRBY_Keyspecs,1,NULL,2),.args=INCRBY_Args},
+{MAKE_CMD("mult","multiply the integer value of a key by a number.","O(1)","1.0.0",CMD_DOC_NONE,NULL,NULL,"string",COMMAND_GROUP_STRING,MULTBY_History,0,MULTBY_Tips,0,multbyCommand,3,CMD_WRITE|CMD_DENYOOM|CMD_FAST,ACL_CATEGORY_STRING,MULTBY_Keyspecs,1,NULL,2),.args=MULTBY_Args},
 {MAKE_CMD("incrbyfloat","Increment the floating point value of a key by a number. Uses 0 as initial value if the key doesn't exist.","O(1)","2.6.0",CMD_DOC_NONE,NULL,NULL,"string",COMMAND_GROUP_STRING,INCRBYFLOAT_History,0,INCRBYFLOAT_Tips,0,incrbyfloatCommand,3,CMD_WRITE|CMD_DENYOOM|CMD_FAST,ACL_CATEGORY_STRING,INCRBYFLOAT_Keyspecs,1,NULL,2),.args=INCRBYFLOAT_Args},
 {MAKE_CMD("increx","Increments the numeric value of a key by a number and sets its expiration time. Uses 0 as initial value if the key doesn't exist.","O(1)","8.8.0",CMD_DOC_NONE,NULL,NULL,"string",COMMAND_GROUP_STRING,INCREX_History,0,INCREX_Tips,0,increxCommand,-2,CMD_WRITE|CMD_DENYOOM|CMD_FAST,ACL_CATEGORY_STRING,INCREX_Keyspecs,1,NULL,7),.args=INCREX_Args},
 {MAKE_CMD("lcs","Finds the longest common substring.","O(N*M) where N and M are the lengths of s1 and s2, respectively","7.0.0",CMD_DOC_NONE,NULL,NULL,"string",COMMAND_GROUP_STRING,LCS_History,0,LCS_Tips,0,lcsCommand,-3,CMD_READONLY,ACL_CATEGORY_STRING,LCS_Keyspecs,1,NULL,6),.args=LCS_Args},
