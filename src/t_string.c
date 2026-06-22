@@ -12,6 +12,7 @@
 #include "xxhash.h"
 #include <float.h>
 #include <math.h> /* isnan(), isinf() */
+#include <stdbool.h>
 
 /* XXH3 64-bit hash produces 16 hex characters when formatted */
 #define DIGEST_HEX_LENGTH 16
